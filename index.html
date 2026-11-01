@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Jiang</title>
+  <title>江畔小记</title>
+  <meta name="description" content="Jiang 的个人主页：写代码，也记录生活，汇总个人社交账号。">
   <style>
     *,
     *::before,
@@ -25,23 +26,30 @@
       background: #fff;
       color: #000;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      -webkit-font-smoothing: antialiased;
     }
 
     main {
       display: grid;
       flex: 1;
       place-items: center;
-      padding: 2rem;
+      padding: 3rem 1.5rem;
+    }
+
+    .profile {
+      width: min(100%, 26rem);
+      text-align: center;
     }
 
     /* h1 固定为 5 个字符宽，让整词始终居中，只让内部文字逐字露出。 */
     h1 {
       width: 5ch;
-      margin: 0;
+      margin: 0 auto 1rem;
       font: inherit;
-      font-size: clamp(1.25rem, 4vw, 2rem);
+      font-size: clamp(1.5rem, 5vw, 2.25rem);
       font-weight: 400;
       line-height: 1.2;
+      text-align: left;
     }
 
     /* 打字机：宽度按 5 步增长，右边框当光标，打完闪两下后淡出。 */
@@ -85,12 +93,53 @@
       }
     }
 
-    /* 备案号恢复展示时使用。 */
+    .site-name {
+      margin: 0 0 1.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-indent: 0.14em;
+    }
+
+    .bio {
+      margin: 0 0 1.75rem;
+      font-size: 0.875rem;
+      line-height: 1.9;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem 1.5rem;
+      font-size: 0.8125rem;
+    }
+
+    .links a {
+      color: inherit;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.25em;
+    }
+
+    .links a:hover {
+      text-decoration-thickness: 2px;
+    }
+
+    a:focus-visible {
+      outline: 1px solid currentColor;
+      outline-offset: 0.25rem;
+    }
+
+    /* 备案号下发后放回 footer，样式已保留。 */
     footer {
       padding: 0 1rem 1.25rem;
       text-align: center;
       font-size: 0.75rem;
-      line-height: 1.6;
+      line-height: 1.8;
+    }
+
+    footer p {
+      margin: 0;
     }
 
     footer a {
@@ -105,15 +154,28 @@
 </head>
 <body>
   <main>
-    <h1><span class="type">Jiang</span></h1>
+    <div class="profile">
+      <h1><span class="type">Jiang</span></h1>
+      <p class="site-name">江畔小记·个人主页</p>
+      <p class="bio">Jiang，写代码，也记录生活。<br>这里是我的个人主页，汇总常用社交账号。</p>
+
+      <nav class="links" aria-label="社交账号">
+        <a href="https://github.com/JIANG-R98" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <!-- 添加更多入口时照此格式，例如：
+        <a href="https://weibo.com/u/你的ID" target="_blank" rel="noopener noreferrer">微博</a>
+        <a href="https://www.xiaohongshu.com/user/profile/你的ID" target="_blank" rel="noopener noreferrer">小红书</a>
+        <a href="mailto:you@example.com">邮箱</a>
+        -->
+      </nav>
+    </div>
   </main>
 
-  <!--
-    备案号先不展示；拿到真实备案号后放回：
-
-    <footer>
+  <footer>
+    <p>© 2026 江畔小记</p>
+    <!--
+      备案号下发后，把下面一行放回 footer 内，与版权行并排：
       <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">京ICP备XXXXXXXX号-1</a>
-    </footer>
-  -->
+    -->
+  </footer>
 </body>
 </html>
