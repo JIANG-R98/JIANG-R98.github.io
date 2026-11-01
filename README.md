@@ -1,6 +1,6 @@
 # Jiang
 
-一个极简个人主页：整页空白，只有居中的等宽 `Jiang` 和页脚的备案号占位。
+一个极简个人主页：整页空白，只有居中的等宽 `Jiang`，进入页面时逐字打出，并带一个打字机光标。备案号暂不展示。
 
 ## 文件
 
@@ -23,9 +23,11 @@ python3 -m http.server 8000
 
 ## 修改
 
-- 名字：修改 `index.html` 里的 `<h1>Jiang</h1>`。
-- 备案号：把页脚的 `京ICP备XXXXXXXX号-1` 替换为真实备案号，保留 `beian.miit.gov.cn` 链接。
-- 不备案：直接删除页脚那一条链接即可，不要保留假备案号。
+- 名字：改两处——`<span class="type">Jiang</span>` 里的文字，以及 `h1` 的 `width: 5ch`、`@keyframes typing` 里的 `width: 5ch` 和 `steps(5, end)`。数字都要等于新名字的字符数（`Jiang` 是 5 个字符）。
+- 打字速度：调整 `.type` 里 `typing` 动画的 `0.75s`。
+- 光标：由 `.type` 的 `border-right` 模拟，`caret-blink` 控制闪烁两次，`caret-off` 控制结束后淡出；不想要光标就删掉这三行动画里除 `typing` 以外的两条，并把 `border-right` 设为 `transparent`。
+- 备案号：拿到真实备案号后，把 HTML 末尾注释里的 `<footer>` 放回 `</main>` 之后即可，样式已保留；记得替换 `京ICP备XXXXXXXX号-1`。
+- 减少动态效果：系统开启「减弱动态效果」时直接显示 `Jiang`，不播放打字动画。
 
 ## 部署
 

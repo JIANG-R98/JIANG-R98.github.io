@@ -34,14 +34,58 @@
       padding: 2rem;
     }
 
+    /* h1 固定为 5 个字符宽，让整词始终居中，只让内部文字逐字露出。 */
     h1 {
+      width: 5ch;
       margin: 0;
       font: inherit;
       font-size: clamp(1.25rem, 4vw, 2rem);
       font-weight: 400;
-      letter-spacing: 0.02em;
+      line-height: 1.2;
     }
 
+    /* 打字机：宽度按 5 步增长，右边框当光标，打完闪两下后淡出。 */
+    .type {
+      display: block;
+      box-sizing: content-box;
+      width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 0.09em solid transparent;
+      animation:
+        typing 0.75s steps(5, end) 0.2s forwards,
+        caret-blink 0.9s step-end 2 0.2s,
+        caret-off 0.35s linear 2s forwards;
+    }
+
+    @keyframes typing {
+      to { width: 5ch; }
+    }
+
+    @keyframes caret-blink {
+      0%,
+      100% {
+        border-right-color: currentColor;
+      }
+
+      50% {
+        border-right-color: transparent;
+      }
+    }
+
+    @keyframes caret-off {
+      to { border-right-color: transparent; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .type {
+        width: 5ch;
+        border-right-color: transparent;
+        animation: none;
+      }
+    }
+
+    /* 备案号恢复展示时使用。 */
     footer {
       padding: 0 1rem 1.25rem;
       text-align: center;
@@ -61,12 +105,15 @@
 </head>
 <body>
   <main>
-    <h1>Jiang</h1>
+    <h1><span class="type">Jiang</span></h1>
   </main>
 
-  <footer>
-    <!-- 备案通过后，把占位文本替换为真实备案号。 -->
-    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">京ICP备XXXXXXXX号-1</a>
-  </footer>
+  <!--
+    备案号先不展示；拿到真实备案号后放回：
+
+    <footer>
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">京ICP备XXXXXXXX号-1</a>
+    </footer>
+  -->
 </body>
 </html>
