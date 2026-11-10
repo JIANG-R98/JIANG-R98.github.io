@@ -143,6 +143,24 @@
     footer a:hover {
       text-decoration: underline;
     }
+
+    .filings {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.25rem 1rem;
+    }
+
+    .filing-mps {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .filing-mps img {
+      width: 16px;
+      height: 17px;
+    }
   </style>
 </head>
 <body>
@@ -162,7 +180,10 @@
   </main>
 
   <footer>
-    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备2026077071号</a>
+    <div class="filings">
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备2026077071号</a>
+      <a class="filing-mps" href="https://beian.mps.gov.cn/#/query/webSearch?code=11010502064063" target="_blank" rel="noopener noreferrer"><img src="beian.png" alt="公安备案图标">京公网安备11010502064063号</a>
+    </div>
   </footer>
 </body>
 </html>
