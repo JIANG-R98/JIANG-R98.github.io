@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>江畔小记</title>
-  <meta name="description" content="Jiang 的个人主页：写代码，也记录生活。">
+  <meta name="description" content="网站施工中，不用期待">
   <style>
     *,
     *::before,
@@ -33,99 +33,72 @@
       display: grid;
       flex: 1;
       place-items: center;
-      padding: 3rem 1.5rem;
+      padding: 1.5rem;
     }
 
-    .profile {
-      width: min(100%, 26rem);
-      text-align: center;
+    .notice {
+      position: relative;
+      padding: clamp(1.1rem, 3vw, 1.4rem) clamp(1.5rem, 5vw, 2.2rem);
+      background: #fff;
     }
 
-    /* h1 固定为 5 个字符宽，让整词始终居中，只让内部文字逐字露出。 */
-    h1 {
-      width: 5ch;
-      margin: 0 auto 1rem;
-      font: inherit;
-      font-size: clamp(1.5rem, 5vw, 2.25rem);
-      font-weight: 400;
-      line-height: 1.2;
-      text-align: left;
+    /* 边框分两组描出：上下先展开，左右再合拢 */
+    .notice::before,
+    .notice::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
     }
 
-    /* 打字机：宽度按 5 步增长，右边框当光标，打完闪两下后淡出。 */
-    .type {
-      display: block;
-      box-sizing: content-box;
-      width: 0;
-      overflow: hidden;
+    .notice::before {
+      border-top: 1px solid #000;
+      border-bottom: 1px solid #000;
+      animation: frame-x 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) 0.12s both;
+    }
+
+    .notice::after {
+      border-left: 1px solid #000;
+      border-right: 1px solid #000;
+      animation: frame-y 0.42s cubic-bezier(0.22, 0.61, 0.36, 1) 0.5s both;
+    }
+
+    .copy {
+      margin: 0;
+      font-size: clamp(0.8rem, 2.6vw, 0.95rem);
+      letter-spacing: 0.06em;
+      line-height: 1.6;
       white-space: nowrap;
-      border-right: 0.09em solid transparent;
-      animation:
-        typing 0.75s steps(5, end) 0.2s forwards,
-        caret-blink 0.9s step-end 2 0.2s,
-        caret-off 0.35s linear 2s forwards;
+      animation: copy-in 0.5s ease-out 0.7s both;
     }
 
-    @keyframes typing {
-      to { width: 5ch; }
-    }
-
-    @keyframes caret-blink {
-      0%,
-      100% {
-        border-right-color: currentColor;
+    @keyframes frame-x {
+      from {
+        transform: scaleX(0);
       }
-
-      50% {
-        border-right-color: transparent;
+      to {
+        transform: scaleX(1);
       }
     }
 
-    @keyframes caret-off {
-      to { border-right-color: transparent; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .type {
-        width: 5ch;
-        border-right-color: transparent;
-        animation: none;
+    @keyframes frame-y {
+      from {
+        transform: scaleY(0);
+      }
+      to {
+        transform: scaleY(1);
       }
     }
 
-    .bio {
-      margin: 0 0 1.75rem;
-      font-size: 0.875rem;
-      line-height: 1.9;
-    }
-
-    .bio:last-child {
-      margin-bottom: 0;
-    }
-
-    /* 社交入口恢复时使用。 */
-    .links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.5rem 1.5rem;
-      font-size: 0.8125rem;
-    }
-
-    .links a {
-      color: inherit;
-      text-decoration: underline;
-      text-decoration-thickness: 1px;
-      text-underline-offset: 0.25em;
-    }
-
-    .links a:hover {
-      text-decoration-thickness: 2px;
-    }
-
-    a:focus-visible {
-      outline: 1px solid currentColor;
-      outline-offset: 0.25rem;
+    @keyframes copy-in {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     footer {
@@ -161,21 +134,31 @@
       width: 16px;
       height: 17px;
     }
+
+    a:focus-visible {
+      outline: 1px solid currentColor;
+      outline-offset: 0.25rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .notice::before,
+      .notice::after {
+        animation: none;
+        transform: none;
+      }
+
+      .copy {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
   </style>
 </head>
 <body>
   <main>
-    <div class="profile">
-      <h1><span class="type">Jiang</span></h1>
-      <p class="bio">Jiang，写代码，也记录生活。<br>这里是我的个人主页。</p>
-
-      <!--
-        社交入口恢复时，把下面这段放回简介下方，并替换成自己的地址：
-
-        <nav class="links" aria-label="社交账号">
-          <a href="https://example.com" target="_blank" rel="noopener noreferrer">示例</a>
-        </nav>
-      -->
+    <div class="notice">
+      <p class="copy">🚧 网站施工中，不用期待</p>
     </div>
   </main>
 
