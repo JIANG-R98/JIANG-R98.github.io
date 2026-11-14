@@ -1,20 +1,78 @@
 <!doctype html>
+<!--
+  江江 / JIANG-R98 个人主页
+  单文件站点：样式、文案、双语和入场动画都在这里，无构建步骤。
+  样式分区：1 变量 / 2 基础 / 3 顶栏 / 4 首屏与文案 / 5 入场状态 / 6 页脚 / 7 减少动态
+  改文案改 data-zh / data-en；改渐变改 --sweep-gradient；改节奏看 playIntro() 和 .hero-title 的 transition。
+-->
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>江畔小记</title>
-  <meta name="description" content="网站施工中，不用期待">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1011" media="(prefers-color-scheme: dark)">
+  <title>Jiang Jiang Jiang</title>
+  <meta name="description" content="网站建设中，没有方向，没有想法，不用期待。">
+  <link rel="canonical" href="https://starvoid.top/">
+  <script>
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('intro');
+    }
+  </script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23121314'/%3E%3Ctext x='32' y='45' font-family='sans-serif' font-size='36' text-anchor='middle' fill='%23ffffff'%3E%E6%B1%9F%3C/text%3E%3C/svg%3E">
   <style>
+    /* =========================================================
+       1. 设计变量
+       ========================================================= */
+    :root {
+      --bg: #fff;
+      --fg: #121314;
+      --muted: rgba(30, 30, 30, 0.62);
+      /* 跑马灯渐变：文字主体保持墨色，只有一条窄彩带扫过。 */
+      --sweep-gradient: linear-gradient(
+        100deg,
+        var(--fg) 0%,
+        var(--fg) 42%,
+        rgba(122, 90, 255, 0.95) 46%,
+        rgba(0, 176, 255, 0.92) 48.5%,
+        rgba(0, 206, 158, 0.92) 51%,
+        rgba(255, 72, 158, 0.95) 54%,
+        var(--fg) 58%,
+        var(--fg) 100%
+      );
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1011;
+        --fg: #ececec;
+        --muted: rgba(236, 236, 236, 0.56);
+        --sweep-gradient: linear-gradient(
+          100deg,
+          var(--fg) 0%,
+          var(--fg) 42%,
+          rgba(174, 152, 255, 0.98) 46%,
+          rgba(104, 204, 255, 0.95) 48.5%,
+          rgba(80, 240, 196, 0.94) 51%,
+          rgba(255, 146, 206, 0.98) 54%,
+          var(--fg) 58%,
+          var(--fg) 100%
+        );
+      }
+    }
+
+    /* =========================================================
+       2. 页面基础
+       ========================================================= */
     *,
     *::before,
     *::after {
       box-sizing: border-box;
     }
 
-    html,
-    body {
-      height: 100%;
+    html {
+      color-scheme: light dark;
     }
 
     body {
@@ -23,150 +81,656 @@
       min-height: 100vh;
       min-height: 100svh;
       margin: 0;
-      background: #fff;
-      color: #000;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      padding: 5vh 10vw;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: clamp(15px, calc(10px + 0.33vw), 17px);
+      line-height: 1.4;
       -webkit-font-smoothing: antialiased;
     }
 
+    /* =========================================================
+       3. 顶栏控制
+       ========================================================= */
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: clamp(1rem, 3vh, 1.6rem);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.85rem, 1.8vw, 1.3rem);
+    }
+
+    .ctl {
+      padding: 0.2em 0.1em;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+
+    .ctl:hover {
+      color: var(--fg);
+      text-decoration: underline;
+      text-underline-offset: 0.22em;
+    }
+
+    .lang {
+      min-width: 2.2em;
+      text-align: right;
+    }
+
+    .replay {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.32em;
+    }
+
+    .replay-icon {
+      font-size: 1.2em;
+      line-height: 1;
+    }
+
+    /* =========================================================
+       4. 首屏与文案
+       ========================================================= */
     main {
-      display: grid;
       flex: 1;
-      place-items: center;
-      padding: 1.5rem;
     }
 
-    .notice {
-      position: relative;
-      padding: clamp(1.1rem, 3vw, 1.4rem) clamp(1.5rem, 5vw, 2.2rem);
-      background: #fff;
+    .hero-title {
+      display: inline-block;
+      min-height: 1.05em;
+      margin: 0 0 0.7em;
+      font-size: clamp(3rem, 9vw, 5.2em);
+      font-weight: 500;
+      line-height: 1.05;
+      /* 名字放大用较慢的过渡，和第二阶段文案错开。 */
+      transition: font-size 950ms cubic-bezier(0.33, 0.75, 0.3, 1);
     }
 
-    /* 边框分两组描出：上下先展开，左右再合拢 */
-    .notice::before,
-    .notice::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
+    .message {
+      max-width: 28em;
+      margin: 0 0 1.1em;
+      font-size: 1.75em;
+      font-weight: 300;
+      line-height: 1.55;
     }
 
-    .notice::before {
-      border-top: 1px solid #000;
-      border-bottom: 1px solid #000;
-      animation: frame-x 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) 0.12s both;
+    .line {
+      display: flex;
+      align-items: center;
+      min-height: 1.55em;
     }
 
-    .notice::after {
-      border-left: 1px solid #000;
-      border-right: 1px solid #000;
-      animation: frame-y 0.42s cubic-bezier(0.22, 0.61, 0.36, 1) 0.5s both;
+    .emoji {
+      flex: none;
+      width: 1.3em;
+      margin-right: 0.32em;
+      font-weight: 400;
+      line-height: 1;
+      text-align: left;
     }
 
-    .copy {
-      margin: 0;
-      font-size: clamp(0.8rem, 2.6vw, 0.95rem);
-      letter-spacing: 0.06em;
-      line-height: 1.6;
+    .gh-row {
+      margin: 1.4em 0 0;
+      font-size: 1em;
+      font-weight: 400;
+    }
+
+    .gh {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45em;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .gh svg {
+      flex: none;
+    }
+
+    .gh:hover {
+      text-decoration: underline;
+      text-underline-offset: 0.22em;
+    }
+
+    .gh-arrow {
+      opacity: 0.55;
+      transition: transform 200ms ease, opacity 200ms ease;
+    }
+
+    .gh:hover .gh-arrow {
+      opacity: 1;
+      transform: translate(2px, -2px);
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 1px solid currentColor;
+      outline-offset: 3px;
+    }
+
+    /* =========================================================
+       5. 入场动画状态
+       ---------------------------------------------------------
+       html.intro  入场进行中：文案隐藏，欢迎语只显示名字
+       html.intro.grow  第二阶段：欢迎语收起，名字放大，文案浮现
+       ========================================================= */
+    html.intro .hero-title {
+      font-size: min(clamp(3rem, 9vw, 5.2em), 8.7vw, 4.3em);
+    }
+
+    html.intro.grow .hero-title {
+      font-size: clamp(3rem, 9vw, 5.2em);
+    }
+
+    /* 下方文案等欢迎语结束再出现。 */
+    html.intro .line,
+    html.intro .gh-row {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .greeting,
+    .period {
+      display: none;
+    }
+
+    html.intro .greeting,
+    html.intro .period {
+      display: inline-block;
+      overflow: hidden;
       white-space: nowrap;
-      animation: copy-in 0.5s ease-out 0.7s both;
+      vertical-align: bottom;
     }
 
-    @keyframes frame-x {
-      from {
-        transform: scaleX(0);
-      }
-      to {
-        transform: scaleX(1);
-      }
+    .ch,
+    .name {
+      display: inline-block;
+      vertical-align: bottom;
     }
 
-    @keyframes frame-y {
-      from {
-        transform: scaleY(0);
-      }
-      to {
-        transform: scaleY(1);
-      }
+    .ch {
+      white-space: pre;
     }
 
-    @keyframes copy-in {
-      from {
-        opacity: 0;
-        transform: translateY(4px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* 把渐变绘制盒上下各扩 0.18em，字形不会缺一截；
+       等量负外边距让文字基线保持不变。 */
+    .ch,
+    .name,
+    .line [data-zh],
+    .gh-label {
+      padding-block: 0.18em;
+      margin-block: -0.18em;
     }
 
+    /* =========================================================
+       6. 页脚（备案信息必须保持一行）
+       ========================================================= */
     footer {
-      padding: 0 1rem 1.25rem;
-      text-align: center;
-      font-size: 0.75rem;
-      line-height: 1.8;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: clamp(0.55rem, 1.2vw, 1.2rem);
+      width: 100%;
+      max-width: 44.8em;
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: clamp(8.5px, 2.5vw, 12px);
     }
 
     footer a {
+      display: inline-flex;
+      align-items: center;
       color: inherit;
+      font-size: inherit;
+      white-space: nowrap;
       text-decoration: none;
     }
 
     footer a:hover {
       text-decoration: underline;
+      text-underline-offset: 0.2em;
     }
 
-    .filings {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.25rem 1rem;
+    footer img {
+      width: 15px;
+      height: 16px;
+      margin-right: 0.35rem;
     }
 
-    .filing-mps {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-
-    .filing-mps img {
-      width: 16px;
-      height: 17px;
-    }
-
-    a:focus-visible {
-      outline: 1px solid currentColor;
-      outline-offset: 0.25rem;
-    }
-
+    /* =========================================================
+       7. 减少动态效果
+       ========================================================= */
     @media (prefers-reduced-motion: reduce) {
-      .notice::before,
-      .notice::after {
-        animation: none;
-        transform: none;
-      }
-
-      .copy {
-        animation: none;
-        opacity: 1;
-        transform: none;
+      .gh-arrow {
+        transition: none;
       }
     }
   </style>
 </head>
 <body>
-  <main>
-    <div class="notice">
-      <p class="copy">🚧 网站施工中，不用期待</p>
+  <header class="topbar">
+    <div class="controls">
+      <button class="ctl replay" id="replay" type="button" aria-label="重新播放入场动画">
+        <span class="replay-icon" aria-hidden="true">&#8635;</span><span data-zh="重播" data-en="Replay">重播</span>
+      </button>
+      <button class="ctl lang" id="lang" type="button" aria-label="Switch to English">EN</button>
     </div>
+  </header>
+
+  <main class="copy" id="copy">
+    <!-- 首屏：入场波浪结束后只保留名字 -->
+    <h1 class="hero-title"><span class="greeting" data-zh="嗨，可以叫我" data-en="Hi, call me&#160;">嗨，可以叫我</span><span class="name" data-zh="江江" data-en="Jiang">江江</span><span class="period" data-zh="。" data-en=".">。</span></h1>
+
+    <!-- 四行文案与 GitHub：入场第二阶段依次浮现 -->
+    <p class="message">
+      <span class="line"><span class="emoji" aria-hidden="true">🚧</span><span data-zh="网站建设中" data-en="Under construction">网站建设中</span></span>
+      <span class="line"><span class="emoji" aria-hidden="true">🧭</span><span data-zh="没有方向" data-en="No direction">没有方向</span></span>
+      <span class="line"><span class="emoji" aria-hidden="true">💭</span><span data-zh="没有想法" data-en="No ideas">没有想法</span></span>
+      <span class="line"><span class="emoji" aria-hidden="true">🤪</span><span data-zh="不用期待" data-en="No expectations">不用期待</span></span>
+    </p>
+    <p class="gh-row">
+      <a class="gh" href="https://github.com/JIANG-R98" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        <span class="gh-label">GitHub</span>
+        <span class="gh-arrow" aria-hidden="true">&#8599;</span>
+      </a>
+    </p>
   </main>
 
-  <footer>
-    <div class="filings">
-      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备2026077071号</a>
-      <a class="filing-mps" href="https://beian.mps.gov.cn/#/query/webSearch?code=11010502064063" target="_blank" rel="noopener noreferrer"><img src="beian.png" alt="公安备案图标">京公网安备11010502064063号</a>
-    </div>
+  <footer lang="zh-CN">
+    <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备2026077071号</a>
+    <a href="https://beian.mps.gov.cn/#/query/webSearch?code=11010502064063" target="_blank" rel="noopener noreferrer"><img src="beian.png" alt="公安备案图标">京公网安备11010502064063号</a>
   </footer>
+
+  <script>
+    (() => {
+      // ---------- 元素引用 ----------
+      const copy = document.getElementById('copy');
+      const toggle = document.getElementById('lang');
+      const replay = document.getElementById('replay');
+      const replayText = replay.querySelector('[data-zh]');
+      const targets = [...copy.querySelectorAll('[data-zh]')];
+      const heroName = copy.querySelector('.hero-title');
+      const greeting = copy.querySelector('.greeting');
+      const name = copy.querySelector('.name');
+      const period = copy.querySelector('.period');
+      const below = [...copy.querySelectorAll('.line'), copy.querySelector('.gh-row')];
+      const lineTexts = [...copy.querySelectorAll('.line [data-zh]')];
+      const ghLabel = copy.querySelector('.gh-label');
+      const swept = [name, ...lineTexts, ghLabel];
+      const description = document.querySelector('meta[name="description"]');
+
+      // ---------- 文案与元信息 ----------
+      const TITLE = 'Jiang Jiang Jiang';
+      const DESCRIPTIONS = {
+        zh: '网站建设中，没有方向，没有想法，不用期待。',
+        en: 'Under construction. No direction, no ideas, no expectations.',
+      };
+
+      // ---------- 运行状态 ----------
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const introAnims = [];
+      let lang = 'zh';
+      let busy = false;
+      let runId = 0;
+      let introRun = 0;
+      let failsafe = 0;
+      let introDone = !document.documentElement.classList.contains('intro');
+
+      try {
+        if (localStorage.getItem('site-lang') === 'en') lang = 'en';
+      } catch (error) {
+        // Storage can be unavailable; keep the default language.
+      }
+
+      // ---------- 小工具 ----------
+      const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      const settle = (animations) =>
+        Promise.all(animations.map((animation) => animation.finished.catch(() => {})));
+
+      function finish() {
+        busy = false;
+        copy.removeAttribute('aria-busy');
+      }
+
+      // 让一段文字用渐变填充；背景尺寸按文字自身的宽度单独计算。
+      function paintGradientText(node, gradient, backgroundSize) {
+        node.style.backgroundImage = gradient;
+        node.style.backgroundSize = backgroundSize;
+        node.style.backgroundRepeat = 'no-repeat';
+        node.style.backgroundClip = 'text';
+        node.style.webkitBackgroundClip = 'text';
+        node.style.color = 'transparent';
+        node.style.webkitTextFillColor = 'transparent';
+      }
+
+      // ---------- 文案与元信息更新 ----------
+      function setMeta(next) {
+        const isEnglish = next === 'en';
+        document.title = TITLE;
+        description.setAttribute('content', DESCRIPTIONS[next]);
+        toggle.setAttribute('aria-label', isEnglish ? '切换到中文' : 'Switch to English');
+        replay.setAttribute('aria-label', isEnglish ? 'Replay intro' : '重新播放入场动画');
+        try {
+          localStorage.setItem('site-lang', next);
+        } catch (error) {
+          // Ignore storage failures.
+        }
+      }
+
+      function apply(next) {
+        lang = next;
+        document.documentElement.lang = next === 'en' ? 'en' : 'zh-CN';
+        targets.forEach((node) => {
+          node.textContent = node.dataset[next];
+        });
+        replayText.textContent = replayText.dataset[next];
+        toggle.textContent = next === 'en' ? '中文' : 'EN';
+        setMeta(next);
+      }
+
+      // ---------- 入场动画 ----------
+      function splitChars(node) {
+        const chars = Array.from(node.textContent);
+        node.textContent = '';
+        return chars.map((char) => {
+          const span = document.createElement('span');
+          span.className = 'ch';
+          span.textContent = char;
+          node.append(span);
+          return span;
+        });
+      }
+
+      async function playIntro() {
+        if (introDone || document.hidden) {
+          endIntro();
+          return;
+        }
+
+        const run = ++introRun;
+        clearTimeout(failsafe);
+        failsafe = window.setTimeout(() => {
+          if (!introDone) endIntro();
+        }, 7000);
+
+        const units = [
+          ...splitChars(greeting),
+          ...splitChars(name),
+          ...splitChars(period),
+        ];
+        const step = Math.min(60, 700 / Math.max(1, units.length - 1));
+        const gradient = getComputedStyle(heroName).getPropertyValue('--sweep-gradient').trim();
+        const titleRect = heroName.getBoundingClientRect();
+        const unitOffsets = units.map((unit) => unit.getBoundingClientRect().left - titleRect.left);
+
+        // 所有字共用一整条渐变，按字在行内的位置错开起点。
+        units.forEach((unit, index) => {
+          paintGradientText(unit, gradient, `${titleRect.width * 3}px 100%`);
+
+          introAnims.push(
+            unit.animate(
+              [
+                { backgroundPosition: `${-(unitOffsets[index] + titleRect.width * 1.95)}px 0` },
+                { backgroundPosition: `${-unitOffsets[index]}px 0` },
+              ],
+              { duration: 900, easing: 'linear', fill: 'both' }
+            )
+          );
+        });
+
+        // 逐字波浪：0.4 放大到 1.06，再回落到 1。
+        units.forEach((unit, index) => {
+          introAnims.push(
+            unit.animate(
+              [
+                { transform: 'scale(0.4)', opacity: 0 },
+                { transform: 'scale(1.06)', opacity: 1, offset: 0.72 },
+                { transform: 'scale(1)', opacity: 1 },
+              ],
+              {
+                duration: 680,
+                delay: index * step,
+                easing: 'cubic-bezier(0.22, 0.9, 0.28, 1.06)',
+                fill: 'both',
+              }
+            )
+          );
+        });
+
+        try {
+          await wait(units.length * step + 680 + 160);
+          if (run !== introRun) return;
+
+          units.forEach((unit) => {
+            unit.getAnimations().forEach((animation) => animation.cancel());
+            unit.removeAttribute('style');
+          });
+
+          const greetingWidth = greeting.getBoundingClientRect().width;
+          const periodWidth = period.getBoundingClientRect().width;
+          greeting.style.display = 'inline-block';
+          greeting.style.overflow = 'hidden';
+          greeting.style.whiteSpace = 'nowrap';
+          period.style.display = 'inline-block';
+          period.style.overflow = 'hidden';
+          period.style.whiteSpace = 'nowrap';
+
+          const collapse = [
+            greeting.animate(
+              [
+                { width: greetingWidth + 'px', opacity: 1, filter: 'blur(0)' },
+                { width: '0px', opacity: 0, filter: 'blur(3px)' },
+              ],
+              { duration: 520, easing: 'cubic-bezier(0.5, 0, 0.2, 1)', fill: 'both' }
+            ),
+            period.animate(
+              [
+                { width: periodWidth + 'px', opacity: 1 },
+                { width: '0px', opacity: 0 },
+              ],
+              { duration: 360, delay: 120, easing: 'cubic-bezier(0.5, 0, 0.2, 1)', fill: 'both' }
+            ),
+          ];
+
+          // 欢迎语收起、名字放大的同时，文案浮现、渐变扫过文字。
+          document.documentElement.classList.add('grow');
+          const textSweep = playTextSweep();
+          introAnims.push(...collapse, ...textSweep);
+
+          await Promise.all([settle(collapse), revealCopy(), settle(textSweep)]);
+          if (run !== introRun) return;
+        } catch (error) {
+          // Interrupted by a replay or an early language switch.
+        }
+
+        endIntro();
+      }
+
+      function playTextSweep() {
+        const gradient = getComputedStyle(document.documentElement)
+          .getPropertyValue('--sweep-gradient')
+          .trim();
+        const units = [
+          ...lineTexts.map((node, index) => [node, 155 + index * 120]),
+          [ghLabel, 635],
+        ];
+
+        return units.map(([node, delay]) => {
+          const width = node.getBoundingClientRect().width;
+          const gradientWidth = width * 3.2 + 240;
+          paintGradientText(node, gradient, `${gradientWidth}px 100%`);
+
+          return node.animate(
+            [
+              { backgroundPosition: `${-gradientWidth * 0.75}px 0` },
+              { backgroundPosition: `${width - gradientWidth * 0.25}px 0` },
+            ],
+            {
+              duration: 1050,
+              delay,
+              easing: 'linear',
+              fill: 'both',
+            }
+          );
+        });
+      }
+
+      async function revealCopy() {
+        below.forEach((node) => {
+          node.style.visibility = 'visible';
+        });
+
+        const reveal = below.map((node, index) =>
+          node.animate(
+            [
+              { opacity: 0, transform: 'translateY(18px)', filter: 'blur(4px)' },
+              { opacity: 1, transform: 'translateY(0)', filter: 'blur(0)' },
+            ],
+            {
+              duration: 760,
+              delay: 55 + index * 120,
+              easing: 'cubic-bezier(0.3, 0.6, 0.3, 1)',
+              fill: 'both',
+            }
+          )
+        );
+
+        introAnims.push(...reveal);
+        await settle(reveal);
+      }
+
+      function endIntro() {
+        if (introDone) return;
+        introDone = true;
+        introRun += 1;
+
+        introAnims.forEach((animation) => {
+          try {
+            animation.cancel();
+          } catch (error) {
+            // Already finished.
+          }
+        });
+        introAnims.length = 0;
+        heroName.getAnimations({ subtree: true }).forEach((animation) => {
+          try {
+            animation.cancel();
+          } catch (error) {
+            // Already finished.
+          }
+        });
+
+        // 直接落到最终状态，避免放大过渡倒放。
+        heroName.style.transition = 'none';
+        document.documentElement.classList.remove('intro', 'grow');
+        void heroName.offsetWidth;
+        heroName.style.transition = '';
+
+        greeting.removeAttribute('style');
+        period.removeAttribute('style');
+        swept.forEach((node) => node.removeAttribute('style'));
+        below.forEach((node) => node.removeAttribute('style'));
+        greeting.textContent = greeting.dataset[lang];
+        name.textContent = name.dataset[lang];
+        period.textContent = period.dataset[lang];
+      }
+
+      // ---------- 语言切换与重播 ----------
+      // 所有语言切换走同一段过渡：文案上浮淡出，再从下方错峰进入。
+      async function fadeSwap(next, run) {
+        const group = [heroName, ...below, replay, toggle];
+
+        const out = group.map((node, index) =>
+          node.animate(
+            [
+              { opacity: 1, transform: 'translateY(0)', filter: 'blur(0)' },
+              { opacity: 0, transform: 'translateY(-10px)', filter: 'blur(3px)' },
+            ],
+            {
+              duration: 200,
+              delay: index * 25,
+              easing: 'cubic-bezier(0.4, 0, 1, 1)',
+              fill: 'both',
+            }
+          )
+        );
+
+        await settle(out);
+        if (run !== runId) return;
+        apply(next);
+
+        const enter = group.map((node, index) =>
+          node.animate(
+            [
+              { opacity: 0, transform: 'translateY(14px)', filter: 'blur(4px)' },
+              { opacity: 1, transform: 'translateY(0)', filter: 'blur(0)' },
+            ],
+            {
+              duration: 420,
+              delay: index * 40,
+              easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+              fill: 'both',
+            }
+          )
+        );
+
+        await settle(enter);
+        group.forEach((node) => {
+          node.getAnimations().forEach((animation) => animation.cancel());
+        });
+      }
+
+      async function switchLanguage() {
+        if (busy) return;
+        busy = true;
+        endIntro();
+        const next = lang === 'en' ? 'zh' : 'en';
+        copy.setAttribute('aria-busy', 'true');
+
+        if (reduceMotion.matches || document.hidden) {
+          apply(next);
+          finish();
+          return;
+        }
+
+        const run = ++runId;
+        document.documentElement.lang = next === 'en' ? 'en' : 'zh-CN';
+
+        await fadeSwap(next, run);
+        if (run !== runId) return;
+        finish();
+      }
+
+      function replayIntro() {
+        if (busy || reduceMotion.matches) return;
+        endIntro();
+        introDone = false;
+        heroName.style.transition = 'none';
+        document.documentElement.classList.add('intro');
+        void heroName.offsetWidth;
+        heroName.style.transition = '';
+        playIntro();
+      }
+
+      // ---------- 启动 ----------
+      toggle.addEventListener('click', switchLanguage);
+      replay.addEventListener('click', replayIntro);
+      apply(lang);
+      playIntro();
+    })();
+  </script>
 </body>
 </html>
